@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import AnyHttpUrl, Field,
+from pydantic import AnyHttpUrl, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR: Path = Path(__file__).parent.resolve()
@@ -9,12 +9,16 @@ BASE_DIR: Path = Path(__file__).parent.resolve()
 class Settings(BaseSettings):
     # log_cfg: FilePath = Field(BASE_DIR / "logging.json", description="Path to the logging configuration file")
 
-    worker_heartbeat: float = Field(1.0, description="Seconds to wait between queue pops")
+    worker_heartbeat: float = Field(
+        1.0, description="Seconds to wait between queue pops"
+    )
 
     queue: str = Field()
 
     luik_api: AnyHttpUrl = Field(
-        ..., examples=["http://localhost:8019"], description="The URL on which the boefjes API is available"
+        ...,
+        examples=["http://localhost:8019"],
+        description="The URL on which the boefjes API is available",
     )
 
     boefje_reachable_networks: list[str] = Field(
