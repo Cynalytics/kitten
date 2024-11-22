@@ -1,32 +1,13 @@
-import json
-import logging.config
+import logging
 import time
 
 import docker
 import httpx
-import structlog
 
 from kitten.config import settings
 from kitten.models.api_models import LuikPopResponse
 
-with settings.log_cfg.open() as f:
-    logging.config.dictConfig(json.load(f))
 
-structlog.configure(
-    processors=[
-        structlog.contextvars.merge_contextvars,
-        structlog.processors.add_log_level,
-        structlog.processors.StackInfoRenderer(),
-        structlog.dev.set_exc_info,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper("iso", utc=False),
-        structlog.dev.ConsoleRenderer(colors=True),
-    ],
-    context_class=dict,
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    wrapper_class=structlog.stdlib.BoundLogger,
-    cache_logger_on_first_use=True,
-)
 logger = logging.getLogger(__name__)
 
 client = httpx.Client(base_url=str(settings.luik_api))

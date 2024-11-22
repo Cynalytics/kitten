@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from pydantic import AnyHttpUrl, Field, FilePath
+from pydantic import AnyHttpUrl, Field,
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR: Path = Path(__file__).parent.resolve()
 
 
 class Settings(BaseSettings):
-    log_cfg: FilePath = Field(BASE_DIR / "logging.json", description="Path to the logging configuration file")
+    # log_cfg: FilePath = Field(BASE_DIR / "logging.json", description="Path to the logging configuration file")
 
     worker_heartbeat: float = Field(1.0, description="Seconds to wait between queue pops")
 
