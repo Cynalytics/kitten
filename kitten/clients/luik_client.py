@@ -7,21 +7,21 @@ logger = structlog.get_logger(__name__)
 
 
 class LuikClient:
-    def __init__(self, base_url: str):
-        self._session = Client(base_url=base_url, transport=HTTPTransport(retries=3))
+    def __init__(self, base_url: str, queue: str):
+        self.session = Client(base_url=base_url, transport=HTTPTransport(retries=3))
+        self._queue = queue
 
     def pop_queue(
         self,
-        queue: str,
-        boefje_task_capabilities: list[str],
-        boefje_reachable_networks: list[str],
+        task_capabilities: list[str],
+        reachable_networks: list[str],
     ):
         try:
-            response = self._session.post(
-                f"/pop/{queue}",
+            response = self.session.post(
+                f"/pop/{self._queue}",
                 json={
-                    "task_capabilities": boefje_task_capabilities,
-                    "reachable_networks": boefje_reachable_networks,
+                    "task_capabilities": task_capabilities,
+                    "reachable_networks": reachable_networks,
                 },
             )
 
@@ -34,7 +34,7 @@ class LuikClient:
             elif response.is_error:
                 logger.error(
                     "Something went wrong with popping queue.",
-                    queue=queue,
+                    queue=self._queue,
                     response=response.content,
                 )
                 return None

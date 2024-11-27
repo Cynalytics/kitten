@@ -12,10 +12,9 @@ structlog.configure(
         structlog.dev.set_exc_info,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper("iso", utc=False),
-        structlog.dev.ConsoleRenderer(colors=True, pad_level=False),
+        structlog.dev.ConsoleRenderer(colors=True),
     ],
     context_class=dict,
-    logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,
     cache_logger_on_first_use=True,
 )
@@ -26,7 +25,14 @@ logger = structlog.getLogger(__name__)
 
 def main():
     logger.debug("Running kitten with settings", **settings.model_dump())
-    runner = KittenDockerRunner()
+
+    runner = KittenDockerRunner(
+        str(settings.luik_api),
+        settings.queue,
+        settings.boefje_task_capabilities,
+        settings.boefje_reachable_networks,
+        settings.worker_heartbeat,
+    )
     runner.run()
     logger.info("runner has quit. 👋")
 
