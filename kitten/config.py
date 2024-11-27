@@ -7,17 +7,13 @@ BASE_DIR: Path = Path(__file__).parent.resolve()
 
 
 class Settings(BaseSettings):
-    # log_cfg: FilePath = Field(BASE_DIR / "logging.json", description="Path to the logging configuration file")
-
-    worker_heartbeat: float = Field(
-        1.0, description="Seconds to wait between queue pops"
-    )
+    worker_heartbeat: int = Field(3, description="Seconds to wait between queue pops")
 
     queue: str = Field()
 
     luik_api: AnyHttpUrl = Field(
         ...,
-        examples=["http://localhost:8019"],
+        examples=["http://localhost:8019", "https://cynalytics.nl"],
         description="The URL on which the boefjes API is available",
     )
 
@@ -36,4 +32,4 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
-settings = Settings()
+settings = Settings()  # type: ignore
