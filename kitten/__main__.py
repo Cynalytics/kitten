@@ -1,6 +1,6 @@
 import structlog
 
-from kitten.app import KittenDockerRunner
+from kitten.app import get_kitten_docker_runner
 from kitten.config import settings
 
 
@@ -26,7 +26,7 @@ logger = structlog.getLogger(__name__)
 def main():
     logger.debug("Running kitten with settings", **settings.model_dump())
 
-    runner = KittenDockerRunner(
+    runner = get_kitten_docker_runner(
         str(settings.luik_api),
         settings.queue,
         settings.boefje_task_capabilities,

@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class DockerRunResponse(BaseModel):
-    id: str
-    image: str
+    id: str = Field("")
+    image: str = Field("")

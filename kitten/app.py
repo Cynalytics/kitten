@@ -3,8 +3,8 @@ import time
 import signal
 
 
-from kitten.clients.docker_client import DockerClient
-from kitten.clients.luik_client import LuikClient
+from kitten.clients.docker_client import DockerClient, DockerClientInterface
+from kitten.clients.luik_client import LuikClient, LuikClientInterface
 
 
 class KittenRunner:
@@ -18,20 +18,23 @@ class KittenRunner:
 class KittenDockerRunner(KittenRunner):
     def __init__(
         self,
-        luik_api: str,
-        queue: str,
+        luik_client: LuikClientInterface,
+        docker_client: DockerClientInterface,
         runner_task_capabilities: list[str],
         runner_reachable_networks: list[str],
         runner_heartbeat: int,
+        luik_api: str,
     ):
         self.logger = structlog.get_logger(KittenDockerRunner.__name__)
-        self.luik_client = LuikClient(luik_api, queue)
-        self.docker_client = DockerClient()
+        self.luik_client = luik_client
+        self.docker_client = docker_client
 
         self.runner_task_capabilities = runner_task_capabilities
         self.runner_reachable_networks = runner_reachable_networks
 
         self.runner_heartbeat = runner_heartbeat
+
+        self.luik_api = luik_api
 
         self.active = True
 
@@ -53,7 +56,7 @@ class KittenDockerRunner(KittenRunner):
                 )
                 container = self.docker_client.run_boefje(
                     luik_pop_response.oci_image,
-                    str(self.luik_client.session.base_url).rstrip("/")
+                    self.luik_api.rstrip("/")
                     + f"/boefje/input/{luik_pop_response.task_id}",
                 )
 
@@ -69,3 +72,20 @@ class KittenDockerRunner(KittenRunner):
             self.logger.info("Exiting without signum")
 
         self.active = False
+
+
+def get_kitten_docker_runner(
+    luik_api: str,
+    queue: str,
+    runner_task_capabilities: list[str],
+    runner_reachable_networks: list[str],
+    runner_heartbeat: int,
+) -> KittenRunner:
+    return KittenDockerRunner(
+        LuikClient(luik_api, queue),
+        DockerClient(),
+        runner_task_capabilities,
+        runner_reachable_networks,
+        runner_heartbeat,
+        luik_api,
+    )

@@ -1,0 +1,20 @@
+[
+  {
+    "network": "Network|internet",
+    "requirements": ["ipv4"],
+    "oci_image": "oci_image1",
+    "task_id": "b12aa3d1-5016-4d38-88f2-647814359bc2"
+  },
+  {
+    "network": "Network|internet",
+    "requirements": ["ipv4", "ipv6"],
+    "oci_image": "oci_image1",
+    "task_id": "0030cfa2-bd38-4d2a-988d-b9c0161d5dd4"
+  },
+  {
+    "network": "Network|internet2",
+    "requirements": ["ipv4"],
+    "oci_image": "",
+    "task_id": "4387bb56-d362-4cc4-bbde-55c66c9868dd"
+  }
+]
