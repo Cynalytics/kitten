@@ -6,7 +6,14 @@ from kitten.models.api_models import LuikPopResponse
 logger = structlog.get_logger(__name__)
 
 
-class LuikClient:
+class LuikClientInterface:
+    def pop_queue(
+        self, task_capabilities: list[str], reachable_networks: list[str]
+    ) -> LuikPopResponse | None:
+        raise NotImplementedError()
+
+
+class LuikClient(LuikClientInterface):
     def __init__(self, base_url: str, queue: str):
         self.session = Client(base_url=base_url, transport=HTTPTransport(retries=3))
         self._queue = queue
@@ -15,7 +22,7 @@ class LuikClient:
         self,
         task_capabilities: list[str],
         reachable_networks: list[str],
-    ):
+    ) -> LuikPopResponse | None:
         try:
             response = self.session.post(
                 f"/pop/{self._queue}",
@@ -40,4 +47,5 @@ class LuikClient:
                 return None
         except ConnectError as e:
             logger.error("Failed to connect to Luik.", error=str(e))
+        finally:
             return None

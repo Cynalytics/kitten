@@ -2,8 +2,8 @@ import structlog
 import time
 import signal
 
-import docker
 
+from kitten.clients.docker_client import DockerClient
 from kitten.clients.luik_client import LuikClient
 
 
@@ -26,7 +26,7 @@ class KittenDockerRunner(KittenRunner):
     ):
         self.logger = structlog.get_logger(KittenDockerRunner.__name__)
         self.luik_client = LuikClient(luik_api, queue)
-        self.docker_client = docker.from_env()
+        self.docker_client = DockerClient()
 
         self.runner_task_capabilities = runner_task_capabilities
         self.runner_reachable_networks = runner_reachable_networks
@@ -51,13 +51,10 @@ class KittenDockerRunner(KittenRunner):
                     luik_pop_response.oci_image,
                     luik_pop_response.task_id,
                 )
-                container = self.docker_client.containers.run(
-                    image=luik_pop_response.oci_image,
-                    command=str(self.luik_client.session.base_url).rstrip("/")
+                container = self.docker_client.run_boefje(
+                    luik_pop_response.oci_image,
+                    str(self.luik_client.session.base_url).rstrip("/")
                     + f"/boefje/input/{luik_pop_response.task_id}",
-                    remove=True,
-                    network="host",
-                    detach=True,
                 )
 
                 self.logger.info("Container %s is running", container.id)
