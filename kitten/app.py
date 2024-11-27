@@ -1,5 +1,6 @@
 import structlog
 import time
+import signal
 
 import docker
 
@@ -11,6 +12,9 @@ class KittenRunner:
     def run(self) -> None:
         raise NotImplementedError()
 
+    def exit(self) -> None:
+        raise NotImplementedError()
+
 
 class KittenDockerRunner(KittenRunner):
     def __init__(self) -> None:
@@ -18,11 +22,13 @@ class KittenDockerRunner(KittenRunner):
         self.luik_client = LuikClient(str(settings.luik_api))
         self.docker_client = docker.from_env()
 
-    def run(self) -> None:
-        while True:
-            self.logger.info("Waiting for %s seconds.", settings.worker_heartbeat)
-            time.sleep(settings.worker_heartbeat)
+        self.active = True
 
+    def run(self) -> None:
+        signal.signal(signal.SIGINT, lambda signum, _: self.exit(signum))
+        signal.signal(signal.SIGTERM, lambda signum, _: self.exit(signum))
+
+        while self.active:
             self.logger.info("Popping task")
             luik_pop_response = self.luik_client.pop_queue(
                 settings.queue,
@@ -45,3 +51,14 @@ class KittenDockerRunner(KittenRunner):
                 )
 
                 self.logger.info("Container %s is running", container.id)
+
+            self.logger.info("Waiting for %s seconds.", settings.worker_heartbeat)
+            time.sleep(settings.worker_heartbeat)
+
+    def exit(self, signum: int | None = None):
+        if signum:
+            self.logger.info("Received %s, exiting", signal.Signals(signum).name)
+        else:
+            self.logger.info("Exiting without signum")
+
+        self.active = False
