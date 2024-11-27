@@ -18,11 +18,15 @@ class MockLuikClient(LuikClientInterface):
     def pop_queue(
         self, task_capabilities: list[str], reachable_networks: list[str]
     ) -> LuikPopResponse | None:
-        for task in self.tasks:
-            print(task)
+        for i, task in enumerate(self.tasks):
+            print(i, task)
+            print(task_capabilities, reachable_networks)
+            print(set(task["requirements"]).issubset(task_capabilities))
+            print(task["network"] in reachable_networks)
+            print("**")
             if (
                 set(task["requirements"]).issubset(task_capabilities)
                 and task["network"] in reachable_networks
             ):
-                return LuikPopResponse.model_validate(task)
+                return LuikPopResponse.model_validate(self.tasks.pop(i))
         return None

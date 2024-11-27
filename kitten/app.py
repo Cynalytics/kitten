@@ -5,10 +5,18 @@ import signal
 
 from kitten.clients.docker_client import DockerClient, DockerClientInterface
 from kitten.clients.luik_client import LuikClient, LuikClientInterface
+from kitten.models.api_models import LuikPopResponse
+from kitten.models.docker_models import DockerRunResponse
 
 
 class KittenRunner:
     def run(self) -> None:
+        raise NotImplementedError()
+
+    def update(self) -> DockerRunResponse | None:
+        raise NotImplementedError()
+
+    def handle_job(self, job: LuikPopResponse) -> DockerRunResponse:
         raise NotImplementedError()
 
     def _exit(self) -> None:
@@ -43,27 +51,35 @@ class KittenDockerRunner(KittenRunner):
         signal.signal(signal.SIGTERM, lambda signum, _: self._exit(signum))
 
         while self.active:
-            self.logger.info("Popping task")
-            luik_pop_response = self.luik_client.pop_queue(
-                self.runner_task_capabilities,
-                self.runner_reachable_networks,
-            )
-            if luik_pop_response:
-                self.logger.info(
-                    "Going to run %s for task %s",
-                    luik_pop_response.oci_image,
-                    luik_pop_response.task_id,
-                )
-                container = self.docker_client.run_boefje(
-                    luik_pop_response.oci_image,
-                    self.luik_api.rstrip("/")
-                    + f"/boefje/input/{luik_pop_response.task_id}",
-                )
-
-                self.logger.info("Container %s is running", container.id)
+            self.update()
 
             self.logger.info("Waiting for %s seconds.", self.runner_heartbeat)
             time.sleep(self.runner_heartbeat)
+
+    def update(self) -> DockerRunResponse | None:
+        self.logger.info("Popping task")
+        luik_pop_response = self.luik_client.pop_queue(
+            self.runner_task_capabilities,
+            self.runner_reachable_networks,
+        )
+        if luik_pop_response:
+            return self.handle_job(luik_pop_response)
+        return None
+
+    def handle_job(self, job: LuikPopResponse) -> DockerRunResponse:
+        self.logger.info(
+            "Going to run %s for task %s",
+            job.oci_image,
+            job.task_id,
+        )
+        docker_response = self.docker_client.run_boefje(
+            job.oci_image,
+            self.luik_api.rstrip("/") + f"/boefje/input/{job.task_id}",
+        )
+
+        self.logger.info("Container %s is running", docker_response.id)
+
+        return docker_response
 
     def _exit(self, signum: int | None = None):
         if signum:
