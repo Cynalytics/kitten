@@ -7,6 +7,11 @@ from kitten.models.docker_models import DockerRunResponse
 logger = structlog.get_logger(__name__)
 
 
+class NoOciImageException(Exception):
+    def __init__(self, extra: str = ""):
+        super().__init__(f"No oci_image has been given. {extra}")
+
+
 class DockerClientInterface:
     def run_boefje(self, oci_image: str, input_url: str) -> DockerRunResponse:
         raise NotImplementedError()

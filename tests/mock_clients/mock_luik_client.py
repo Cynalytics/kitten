@@ -19,11 +19,6 @@ class MockLuikClient(LuikClientInterface):
         self, task_capabilities: list[str], reachable_networks: list[str]
     ) -> LuikPopResponse | None:
         for i, task in enumerate(self.tasks):
-            print(i, task)
-            print(task_capabilities, reachable_networks)
-            print(set(task["requirements"]).issubset(task_capabilities))
-            print(task["network"] in reachable_networks)
-            print("**")
             if (
                 set(task["requirements"]).issubset(task_capabilities)
                 and task["network"] in reachable_networks

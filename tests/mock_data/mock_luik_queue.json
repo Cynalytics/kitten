@@ -16,5 +16,11 @@
     "requirements": ["ipv4"],
     "oci_image": "",
     "task_id": "4387bb56-d362-4cc4-bbde-55c66c9868dd"
+  },
+  {
+    "network": "Network|internet2",
+    "requirements": ["ipv4"],
+    "oci_image": "oci_image2",
+    "task_id": "0504ae95-7075-4f58-a039-3116194d6a7a"
   }
 ]
