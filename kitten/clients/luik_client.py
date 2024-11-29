@@ -47,5 +47,5 @@ class LuikClient(LuikClientInterface):
                 return None
         except ConnectError as e:
             logger.error("Failed to connect to Luik.", error=str(e))
-        finally:
-            return None
+
+        return None
