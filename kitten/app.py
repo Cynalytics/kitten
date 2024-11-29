@@ -53,6 +53,9 @@ class KittenDockerRunner(KittenRunner):
         while self.active:
             self.update()
 
+            if not self.active:
+                continue
+
             self.logger.info("Waiting for %s seconds.", self.runner_heartbeat)
             time.sleep(self.runner_heartbeat)
 
@@ -83,7 +86,11 @@ class KittenDockerRunner(KittenRunner):
 
     def _exit(self, signum: int | None = None):
         if signum:
-            self.logger.info("Received %s, exiting", signal.Signals(signum).name)
+            self.logger.info(
+                "Received %s, exiting within %s seconds",
+                signal.Signals(signum).name,
+                self.runner_heartbeat,
+            )
         else:
             self.logger.info("Exiting without signum")
 

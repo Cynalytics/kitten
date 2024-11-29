@@ -19,12 +19,11 @@ structlog.configure(
     cache_logger_on_first_use=True,
 )
 
-
 logger = structlog.getLogger(__name__)
 
 
 def main():
-    logger.debug("Running kitten with settings", **settings.model_dump())
+    logger.info("Running kitten with settings", **settings.model_dump())
 
     runner = get_kitten_docker_runner(
         str(settings.luik_api),

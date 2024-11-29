@@ -22,19 +22,6 @@ repos:
       - id: validate-pyproject
         files: pyproject.toml$
 
-  - repo: https://github.com/rstcheck/rstcheck
-    rev: v6.2.1
-    hooks:
-      - id: rstcheck
-        args:
-          [
-            "--ignore-messages",
-            "Hyperlink target .* is not referenced",
-            "--ignore-directives",
-            "mermaid,automodule",
-          ]
-        additional_dependencies: ["rstcheck[sphinx]", "autodoc-pydantic==2.1.0"]
-
   - repo: https://github.com/MarketSquare/robotframework-tidy
     rev: "4.11.0"
     hooks:
