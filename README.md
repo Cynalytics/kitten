@@ -1,4 +1,4 @@
-[![Run Pytest for Kitten](https://github.com/Cynalytics/kitten/actions/workflows/github-actions-demo.yml/badge.svg)](https://github.com/Cynalytics/kitten/actions/workflows/github-actions-demo.yml)
+[![Run Pytest for Kitten](https://github.com/Cynalytics/kitten/actions/workflows/run-pytest.yml/badge.svg)](https://github.com/Cynalytics/kitten/actions/workflows/run-pytest.yml)
 
 # Kitten
 
