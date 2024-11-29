@@ -1,7 +1,7 @@
 import structlog
 from httpx import Client, HTTPTransport, ConnectError
 
-from kitten.models.api_models import LuikPopResponse
+from kitten.models.api_models import LuikPopRequest, LuikPopResponse
 
 logger = structlog.get_logger(__name__)
 
@@ -26,10 +26,10 @@ class LuikClient(LuikClientInterface):
         try:
             response = self.session.post(
                 f"/pop/{self._queue}",
-                json={
-                    "task_capabilities": task_capabilities,
-                    "reachable_networks": reachable_networks,
-                },
+                json=LuikPopRequest(
+                    task_capabilities=task_capabilities,
+                    reachable_networks=reachable_networks,
+                ).model_dump(),
             )
 
             logger.info(response, content=response.text)

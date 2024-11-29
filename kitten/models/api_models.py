@@ -57,3 +57,8 @@ class LuikBoefjeInputResponse(BaseModel):
     task_id: str
     output_url: str
     boefje_meta: BoefjeMeta
+
+
+class LuikPopRequest(BaseModel):
+    task_capabilities: list[str]
+    reachable_networks: list[str]
