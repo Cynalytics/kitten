@@ -3,3 +3,9 @@
 # Kitten
 
 Kitten service that can sit behind the firewall and run tasks there
+
+## Using Kitten
+
+This project makes use of [Poetry](https://github.com/python-poetry/poetry). You can run it by using:
+
+`poetry run python -m kitten`
