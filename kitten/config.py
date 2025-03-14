@@ -29,6 +29,10 @@ class Settings(BaseSettings):
         examples=[[], ["ipv4", "wifi-pineapple"]],
     )
 
+    auth_password: str = Field(
+        examples=["password"], description="Password for authenticating Luik API"
+    )
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 

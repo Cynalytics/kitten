@@ -56,11 +56,10 @@ class KittenDockerRunner(KittenRunner):
             if not self.active:
                 continue
 
-            self.logger.info("Waiting for %s seconds.", self.runner_heartbeat)
+            self.logger.debug("Waiting for %s seconds.", self.runner_heartbeat)
             time.sleep(self.runner_heartbeat)
 
     def update(self) -> DockerRunResponse | None:
-        self.logger.info("Popping task")
         luik_pop_response = self.luik_client.pop_queue(
             self.runner_task_capabilities,
             self.runner_reachable_networks,
@@ -103,9 +102,10 @@ def get_kitten_docker_runner(
     runner_task_capabilities: list[str],
     runner_reachable_networks: list[str],
     runner_heartbeat: int,
+    auth_password: str,
 ) -> KittenRunner:
     return KittenDockerRunner(
-        LuikClient(luik_api, queue),
+        LuikClient(luik_api, queue, auth_password),
         DockerClient(),
         runner_task_capabilities,
         runner_reachable_networks,
