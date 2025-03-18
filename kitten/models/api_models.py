@@ -1,17 +1,12 @@
+from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class LuikPopResponse(BaseModel):
     oci_image: str
     task_id: str
-
-
-class File(BaseModel):
-    name: str | None = None
-    content: str
-    tags: list[str]
 
 
 class Boefje(BaseModel):
@@ -62,3 +57,19 @@ class LuikBoefjeInputResponse(BaseModel):
 class LuikPopRequest(BaseModel):
     task_capabilities: list[str]
     reachable_networks: list[str]
+
+
+class StatusEnum(str, Enum):
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+
+
+class File(BaseModel):
+    name: str | None = None
+    content: str = Field(json_schema_extra={"contentEncoding": "base64"})
+    tags: list[str] | None = None
+
+
+class BoefjeOutput(BaseModel):
+    status: StatusEnum
+    files: list[File] | None = None

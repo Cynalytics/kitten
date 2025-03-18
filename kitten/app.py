@@ -31,7 +31,7 @@ class KittenDockerRunner(KittenRunner):
         runner_task_capabilities: list[str],
         runner_reachable_networks: list[str],
         runner_heartbeat: int,
-        luik_api: str,
+        kitten_api: str,
     ):
         self.logger = structlog.get_logger(KittenDockerRunner.__name__)
         self.luik_client = luik_client
@@ -42,7 +42,7 @@ class KittenDockerRunner(KittenRunner):
 
         self.runner_heartbeat = runner_heartbeat
 
-        self.luik_api = luik_api
+        self.kitten_api = kitten_api
 
         self.active = True
 
@@ -76,7 +76,7 @@ class KittenDockerRunner(KittenRunner):
         )
         docker_response = self.docker_client.run_boefje(
             job.oci_image,
-            self.luik_api.rstrip("/") + f"/boefje/input/{job.task_id}",
+            self.kitten_api.rstrip("/") + f"/boefje_input/{job.task_id}",
         )
 
         self.logger.info("Container %s is running", docker_response.id)
@@ -98,6 +98,7 @@ class KittenDockerRunner(KittenRunner):
 
 def get_kitten_docker_runner(
     luik_api: str,
+    kitten_api: str,
     queue: str,
     runner_task_capabilities: list[str],
     runner_reachable_networks: list[str],
@@ -110,5 +111,5 @@ def get_kitten_docker_runner(
         runner_task_capabilities,
         runner_reachable_networks,
         runner_heartbeat,
-        luik_api,
+        kitten_api,
     )

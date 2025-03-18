@@ -5,9 +5,10 @@ import typing
 import structlog
 from httpx import Client, HTTPTransport, HTTPStatusError, ConnectError
 
-from kitten.models.api_models import LuikPopRequest, LuikPopResponse
+from kitten.models.api_models import BoefjeOutput, LuikPopRequest, LuikPopResponse
 
 logger = structlog.get_logger(__name__)
+
 
 ClientSessionMethod = Callable[..., Any]
 
@@ -31,6 +32,12 @@ class LuikClientInterface:
     def pop_queue(
         self, task_capabilities: list[str], reachable_networks: list[str]
     ) -> LuikPopResponse | None:
+        raise NotImplementedError()
+
+    def boefje_input(self, task_id: str) -> str:
+        raise NotImplementedError()
+
+    def boefje_output(self, task_id: str, boefje_output: BoefjeOutput) -> None:
         raise NotImplementedError()
 
 
@@ -89,3 +96,25 @@ class LuikClient(LuikClientInterface):
             logger.error("Failed to connect to Luik.", error=str(e))
 
         return None
+
+    @retry_with_login
+    def boefje_input(
+        self, task_id: str
+    ) -> str:  # TODO: return object instead of raw  text
+        response = self.session.get(f"/boefje/input/{task_id}")
+        response.raise_for_status()
+        logger.info("Boefje input sent", task_id=task_id, response=response.text)
+        return response.text
+
+    @retry_with_login
+    def boefje_output(self, task_id: str, boefje_output: BoefjeOutput) -> None:
+        response = self.session.post(
+            f"/boefje/output/{task_id}", json=boefje_output.model_dump()
+        )
+        response.raise_for_status()
+        logger.info(
+            "Boefje output sent",
+            task_id=task_id,
+            response=response.text,
+            status=boefje_output.status,
+        )

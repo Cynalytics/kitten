@@ -33,6 +33,11 @@ class Settings(BaseSettings):
         examples=["password"], description="Password for authenticating Luik API"
     )
 
+    kitten_host: str = Field(
+        "localhost", description="Host address of the Kitten API server"
+    )
+    kitten_port: int = Field(8007, description="Port of the Kitten API server")
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
