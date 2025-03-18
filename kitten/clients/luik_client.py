@@ -98,11 +98,11 @@ class LuikClient(LuikClientInterface):
     @retry_with_login
     def boefje_input(
         self, task_id: str
-    ) -> str:  # TODO: return object instead of raw  text
+    ) -> dict[str, Any]:  # TODO: return object instead of raw  text
         response = self.session.get(f"/boefje/input/{task_id}")
         response.raise_for_status()
         logger.info("Boefje input sent", task_id=task_id, response=response.text)
-        return response.text
+        return response.json()
 
     @retry_with_login
     def boefje_output(self, task_id: str, boefje_output: BoefjeOutput) -> None:

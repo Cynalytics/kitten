@@ -30,18 +30,11 @@ class Settings(BaseSettings):
 
     kitten_api: AnyHttpUrl = Field(
         AnyHttpUrl("http://localhost:8007"),
-        examples=["http://localhost:8007", "https://cynalytics.nl"],
+        examples=["https://cynalytics.nl"],
         description="The URL on which the Kitten API is available for the docker containers",
     )
-
-    kitten_host: str = Field(
-        "localhost", description="Host address of the Kitten API server"
-    )
-    kitten_port: int = Field(8007, description="Port of the Kitten API server")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 settings = Settings()  # type: ignore
-
-settings.kitten_api.port

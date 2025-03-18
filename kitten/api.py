@@ -40,7 +40,7 @@ class UvicornServer(ForkProcess):
 
 
 def run():
-    config = Config(app, host=settings.kitten_host, port=settings.kitten_port)
+    config = Config(app, host=settings.kitten_api.host, port=settings.kitten_api.port)
     instance = UvicornServer(config=config)
     instance.start()
     return instance
@@ -58,7 +58,7 @@ def boefje_input(
 ) -> Response:
     logger.info(f"Boefje input called for {task_id}")
     inp = luik_client.boefje_input(str(task_id))
-    return Response(status_code=200, content=inp)
+    return Response(inp, status_code=200)
 
 
 @app.post("/boefje_output/{task_id}")
