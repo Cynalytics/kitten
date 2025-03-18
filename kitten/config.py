@@ -24,7 +24,7 @@ class Settings(BaseSettings):
         examples=[[], ["ipv4", "wifi-pineapple"]],
     )
 
-    auth_password: str = Field(
+    luik_auth_token: str = Field(
         examples=["password"], description="Password for authenticating Luik API"
     )
 

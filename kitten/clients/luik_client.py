@@ -1,9 +1,5 @@
-from functools import wraps
-from typing import Any
-from collections.abc import Callable
-import typing
 import structlog
-from httpx import Client, HTTPTransport, HTTPStatusError, ConnectError
+from httpx import Client, ConnectError
 
 from kitten.models.api_models import (
     BoefjeInputResponse,
@@ -13,24 +9,6 @@ from kitten.models.api_models import (
 )
 
 logger = structlog.get_logger(__name__)
-
-
-ClientSessionMethod = Callable[..., Any]
-
-
-def retry_with_login(function: ClientSessionMethod) -> ClientSessionMethod:
-    @wraps(function)
-    def wrapper(self, *args, **kwargs):
-        try:
-            return function(self, *args, **kwargs)
-        except HTTPStatusError as error:
-            if error.response.status_code != 401:
-                raise
-
-            self.login()
-            return function(self, *args, **kwargs)
-
-    return typing.cast(ClientSessionMethod, wrapper)
 
 
 class LuikClientInterface:
@@ -47,26 +25,12 @@ class LuikClientInterface:
 
 
 class LuikClient(LuikClientInterface):
-    def __init__(self, base_url: str, auth_password: str):
-        self.session = Client(base_url=base_url, transport=HTTPTransport(retries=3))
-        self._auth_password = auth_password
-
-    def login(self) -> None:
-        auth_header = {"Authorization": f"Bearer {self._get_token()}"}
-        self.session.headers.update(auth_header)
-
-    def _get_token(self) -> str:
-        response = self.session.post(
-            "/token",
-            data={"username": "username", "password": self._auth_password},
-            headers={"content-type": "application/x-www-form-urlencoded"},
+    def __init__(self, base_url: str, auth_token: str):
+        self.session = Client(
+            base_url=base_url,
+            headers={"luik-api-key": auth_token},
         )
 
-        response.raise_for_status()
-
-        return str(response.json()["access_token"])
-
-    @retry_with_login
     def pop_queue(
         self,
         task_capabilities: list[str],
@@ -100,7 +64,6 @@ class LuikClient(LuikClientInterface):
 
         return None
 
-    @retry_with_login
     def boefje_input(
         self, task_id: str
     ) -> BoefjeInputResponse:  # TODO: return object instead of raw  text
@@ -109,7 +72,6 @@ class LuikClient(LuikClientInterface):
         logger.info("Boefje input sent", task_id=task_id, response=response.text)
         return BoefjeInputResponse.model_validate_json(response.content)
 
-    @retry_with_login
     def boefje_output(self, task_id: str, boefje_output: BoefjeOutput) -> None:
         response = self.session.post(
             f"/boefje/output/{task_id}", json=boefje_output.model_dump()

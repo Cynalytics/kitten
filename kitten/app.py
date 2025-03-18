@@ -102,10 +102,10 @@ def get_kitten_docker_runner(
     runner_task_capabilities: list[str],
     runner_reachable_networks: list[str],
     runner_heartbeat: int,
-    auth_password: str,
+    luik_auth_token: str,
 ) -> KittenRunner:
     return KittenDockerRunner(
-        LuikClient(luik_api, auth_password),
+        LuikClient(luik_api, luik_auth_token),
         DockerClient(),
         runner_task_capabilities,
         runner_reachable_networks,

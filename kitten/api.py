@@ -2,6 +2,7 @@ import multiprocessing
 from multiprocessing.context import ForkContext, ForkProcess
 from uuid import UUID
 
+
 import structlog
 from fastapi import Depends, FastAPI, Response
 from kitten.clients.luik_client import LuikClient, LuikClientInterface
@@ -22,7 +23,7 @@ ctx: ForkContext = multiprocessing.get_context("fork")
 def get_luik_client() -> LuikClientInterface:
     return LuikClient(
         base_url=str(settings.luik_api),
-        auth_password=settings.auth_password,
+        auth_token=settings.luik_auth_token,
     )
 
 

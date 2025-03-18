@@ -37,7 +37,7 @@ def main():
         settings.boefje_task_capabilities,
         settings.boefje_reachable_networks,
         settings.worker_heartbeat,
-        settings.auth_password,
+        settings.luik_auth_token,
     )
     runner.run()
     logger.info("runner has quit. 👋")
