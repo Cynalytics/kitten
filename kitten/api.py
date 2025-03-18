@@ -8,7 +8,7 @@ from kitten.clients.luik_client import LuikClient, LuikClientInterface
 from uvicorn import Config, Server
 
 from kitten.config import settings
-from kitten.models.api_models import BoefjeOutput
+from kitten.models.api_models import BoefjeInputResponse, BoefjeOutput
 
 app = FastAPI(
     title="Kitten API",
@@ -54,11 +54,11 @@ async def root():
 @app.get("/boefje_input/{task_id}")
 def boefje_input(
     task_id: UUID,
-    luik_client: LuikClient = Depends(get_luik_client),
-) -> Response:
+    luik_client: LuikClientInterface = Depends(get_luik_client),
+) -> BoefjeInputResponse:
     logger.info(f"Boefje input called for {task_id}")
     inp = luik_client.boefje_input(str(task_id))
-    return Response(inp, status_code=200)
+    return inp
 
 
 @app.post("/boefje_output/{task_id}")

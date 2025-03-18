@@ -5,7 +5,12 @@ import typing
 import structlog
 from httpx import Client, HTTPTransport, HTTPStatusError, ConnectError
 
-from kitten.models.api_models import BoefjeOutput, LuikPopRequest, LuikPopResponse
+from kitten.models.api_models import (
+    BoefjeInputResponse,
+    BoefjeOutput,
+    LuikPopRequest,
+    LuikPopResponse,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -34,7 +39,7 @@ class LuikClientInterface:
     ) -> LuikPopResponse | None:
         raise NotImplementedError()
 
-    def boefje_input(self, task_id: str) -> str:
+    def boefje_input(self, task_id: str) -> BoefjeInputResponse:
         raise NotImplementedError()
 
     def boefje_output(self, task_id: str, boefje_output: BoefjeOutput) -> None:
@@ -98,11 +103,11 @@ class LuikClient(LuikClientInterface):
     @retry_with_login
     def boefje_input(
         self, task_id: str
-    ) -> dict[str, Any]:  # TODO: return object instead of raw  text
+    ) -> BoefjeInputResponse:  # TODO: return object instead of raw  text
         response = self.session.get(f"/boefje/input/{task_id}")
         response.raise_for_status()
         logger.info("Boefje input sent", task_id=task_id, response=response.text)
-        return response.json()
+        return BoefjeInputResponse.model_validate_json(response.content)
 
     @retry_with_login
     def boefje_output(self, task_id: str, boefje_output: BoefjeOutput) -> None:
