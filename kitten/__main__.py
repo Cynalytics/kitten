@@ -33,7 +33,7 @@ def main():
 
     runner = get_kitten_docker_runner(
         str(settings.luik_api),
-        settings.kitten_api,
+        str(settings.kitten_api),
         settings.boefje_task_capabilities,
         settings.boefje_reachable_networks,
         settings.worker_heartbeat,

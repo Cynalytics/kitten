@@ -58,6 +58,9 @@ def boefje_input(
 ) -> BoefjeInputResponse:
     logger.info(f"Boefje input called for {task_id}")
     inp = luik_client.boefje_input(str(task_id))
+
+    inp.output_url = f"{str(settings.kitten_api).rstrip('/')}/boefje_output/{task_id}"
+
     return inp
 
 
