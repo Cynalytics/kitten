@@ -99,14 +99,13 @@ class KittenDockerRunner(KittenRunner):
 def get_kitten_docker_runner(
     luik_api: str,
     kitten_api: str,
-    queue: str,
     runner_task_capabilities: list[str],
     runner_reachable_networks: list[str],
     runner_heartbeat: int,
     auth_password: str,
 ) -> KittenRunner:
     return KittenDockerRunner(
-        LuikClient(luik_api, queue, auth_password),
+        LuikClient(luik_api, auth_password),
         DockerClient(),
         runner_task_capabilities,
         runner_reachable_networks,

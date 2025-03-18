@@ -34,7 +34,6 @@ def main():
     runner = get_kitten_docker_runner(
         str(settings.luik_api),
         f"http://{settings.kitten_host}:{settings.kitten_port}",
-        settings.queue,
         settings.boefje_task_capabilities,
         settings.boefje_reachable_networks,
         settings.worker_heartbeat,

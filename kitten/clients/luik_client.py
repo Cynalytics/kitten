@@ -42,9 +42,8 @@ class LuikClientInterface:
 
 
 class LuikClient(LuikClientInterface):
-    def __init__(self, base_url: str, queue: str, auth_password: str):
+    def __init__(self, base_url: str, auth_password: str):
         self.session = Client(base_url=base_url, transport=HTTPTransport(retries=3))
-        self._queue = queue
         self._auth_password = auth_password
 
     def login(self) -> None:
@@ -70,7 +69,7 @@ class LuikClient(LuikClientInterface):
     ) -> LuikPopResponse | None:
         try:
             response = self.session.post(
-                f"/pop/{self._queue}",
+                "/pop/boefje",
                 json=LuikPopRequest(
                     task_capabilities=task_capabilities,
                     reachable_networks=reachable_networks,
@@ -88,7 +87,6 @@ class LuikClient(LuikClientInterface):
             elif response.is_error:
                 logger.error(
                     "Something went wrong with popping queue.",
-                    queue=self._queue,
                     response=response.content,
                 )
                 return None

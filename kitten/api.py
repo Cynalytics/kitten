@@ -22,7 +22,6 @@ ctx: ForkContext = multiprocessing.get_context("fork")
 def get_luik_client() -> LuikClientInterface:
     return LuikClient(
         base_url=str(settings.luik_api),
-        queue=settings.queue,
         auth_password=settings.auth_password,
     )
 
