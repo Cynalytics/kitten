@@ -38,7 +38,7 @@ class LuikClient(LuikClientInterface):
     ) -> LuikPopResponse | None:
         try:
             response = self.session.post(
-                "/pop/boefje",
+                "/pop",
                 json=LuikPopRequest(
                     task_capabilities=task_capabilities,
                     reachable_networks=reachable_networks,
