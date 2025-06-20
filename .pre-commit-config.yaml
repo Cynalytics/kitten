@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: mixed-line-ending
@@ -17,30 +17,30 @@ repos:
       - id: fix-byte-order-marker
 
   - repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.16
+    rev: v0.24.1
     hooks:
       - id: validate-pyproject
         files: pyproject.toml$
 
   - repo: https://github.com/MarketSquare/robotframework-tidy
-    rev: "4.11.0"
+    rev: "4.17.0"
     hooks:
       - id: robotidy
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.3.5"
+    rev: "v0.12.0"
     hooks:
       - id: ruff
       - id: ruff-format
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.2
+    rev: v3.20.0
     hooks:
       - id: pyupgrade
         args: [--py310-plus]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0
+    rev: v1.16.1
     hooks:
       - id: mypy
         additional_dependencies:
@@ -55,14 +55,14 @@ repos:
           - types-croniter
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: v2.4.1
     hooks:
       - id: codespell
         additional_dependencies: ["tomli"]
         args: ["-L", "lama", "--ignore-regex", ".{1024}|.*codespell-ignore.*"]
 
   - repo: https://github.com/thibaudcolas/pre-commit-stylelint
-    rev: v16.3.1
+    rev: v16.20.0
     hooks:
       - id: stylelint
         args: [--fix]
@@ -78,22 +78,21 @@ repos:
         args: ["-e", "SC1091"]
 
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.8.0-1
+    rev: v3.11.0-1
     hooks:
       - id: shfmt
         args: ["-w", "-s", "-i", "4", "-sr"]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
+    rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
         additional_dependencies:
           - prettier@3.2.5
 
   - repo: https://github.com/python-poetry/poetry
-    rev: 1.8.4
+    rev: 2.1.3
     hooks:
       - id: poetry-check
       - id: poetry-lock
-      - id: poetry-export
       - id: poetry-install
