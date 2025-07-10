@@ -1,6 +1,5 @@
 services:
   kitten:
-    command: python -m kitten
     env_file:
       - .env
     build:

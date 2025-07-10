@@ -9,3 +9,5 @@ RUN pip install -r requirements.txt
 
 # Creating folders, and files for a project:
 COPY . .
+
+CMD ["python", "-m", "kitten"]
