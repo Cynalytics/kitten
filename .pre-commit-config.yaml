@@ -1,4 +1,22 @@
 repos:
+  - repo: local
+    hooks:
+      - id: update-requirements-txt
+        name: "Update requirements.txt"
+        description: "Generate requirements.txt based on poetry.lock"
+        entry: poetry
+        args: [export, --output, requirements.txt]
+        language: system
+        pass_filenames: false
+
+      - id: update-requirements-dev-txt
+        name: "Update requirements-dev.txt"
+        description: "Generate requirements-dev.txt based on poetry.lock"
+        entry: poetry
+        args: [export, --with, dev, --output, requirements-dev.txt]
+        language: system
+        pass_filenames: false
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
