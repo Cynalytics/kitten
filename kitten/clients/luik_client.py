@@ -76,6 +76,14 @@ class LuikClient(LuikClientInterface):
         response = self.session.post(
             f"/boefje/output/{task_id}", json=boefje_output.model_dump()
         )
+        
+        if response.is_error:
+            logger.error(
+                "Failed to send Boefje output",
+                task_id=task_id,
+                status=response.status_code,
+                response=response.text,
+            )
         response.raise_for_status()
         logger.info(
             "Boefje output sent",
