@@ -75,6 +75,7 @@ class BoefjeOutput(BaseModel):
     status: StatusEnum
     files: list[File] | None = None
 
+
 class TaskStatus(Enum):
     """Status of a task."""
 
@@ -85,6 +86,7 @@ class TaskStatus(Enum):
     COMPLETED = "completed"
     FAILED = "failed"
     CANCELLED = "cancelled"
+
 
 class Task(BaseModel):
     id: UUID
@@ -99,13 +101,16 @@ class Task(BaseModel):
     created_at: datetime.datetime
     modified_at: datetime.datetime
 
+
 class TaskIn(BaseModel):
     status: TaskStatus
-    
+
+
 class WorkerManager:
     class Queue(Enum):
         BOEFJES = "boefje"
         NORMALIZERS = "normalizer"
+
 
 class TaskPop(BaseModel):
     results: list[Task]

@@ -5,12 +5,15 @@ from uuid import UUID
 
 
 import structlog
-from fastapi import Body, Depends, FastAPI, Request, Response
+from fastapi import Depends, FastAPI, Request, Response
 from kitten.clients.luik_client import LuikClient, LuikClientInterface
 from uvicorn import Config, Server
 
 from kitten.config import settings
-from kitten.models.api_models import BoefjeInputResponse, BoefjeOutput, Task, TaskIn, WorkerManager
+from kitten.models.api_models import (
+    BoefjeInputResponse,
+    BoefjeOutput,
+)
 
 app = FastAPI(
     title="Kitten API",
@@ -77,9 +80,11 @@ def boefje_output(
 
     return Response(status_code=200)
 
+
 ###############################
 ### Scheduler API endpoints ###
 ###############################
+
 
 @app.post("/api/v0/scheduler/boefje/pop", tags=["scheduler"])
 async def pop_tasks(
@@ -88,8 +93,10 @@ async def pop_tasks(
     filters: dict[str, Any] = dict(),
     luik_client: LuikClient = Depends(get_luik_client),
 ) -> dict[str, Any]:
-    logger.info("Pop tasks called", body=await request.body(), limit=limit, filters=filters)
-    
+    logger.info(
+        "Pop tasks called", body=await request.body(), limit=limit, filters=filters
+    )
+
     # return dict()
     return luik_client.pop_items(filters, limit)
 
@@ -111,4 +118,3 @@ async def pop_tasks(
 # @app.get("/api/v0/scheduler/tasks/{task_id}", response_model=Task, tags=["scheduler"])
 # def get_task(task_id: UUID, luik_client: LuikClient = Depends(get_luik_client)) -> Task:
 #     return get_task_from_scheduler(task_id, luik_client)
-

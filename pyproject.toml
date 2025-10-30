@@ -1,39 +1,28 @@
-[tool.poetry]
+[project]
 name = "kitten"
 version = "0.1.0"
 description = "Kitten service that can sit behind the firewall and run tasks there"
-authors = ["Soufyan Abdellati <abdellatis149@gmail.com>"]
+authors = [{ name = "Soufyan Abdellati", email = "abdellatis149@gmail.com" }]
 readme = "README.md"
+dependencies = [
+  "docker>=7.1.0,<8.0.0",
+  "httpx>=0.28.1,<0.29.0",
+  "fastapi>=0.120.2,<0.121.0",
+  "pydantic>=2.12.3,<3.0.0",
+  "pydantic-settings>=2.11.0,<3.0.0",
+  "structlog>=25.5.0,<26.0.0",
+]
+requires-python = ">=3.10"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-annotated-types = "^0.7.0"
-anyio = "^4.6.2.post1"
-certifi = "^2024.8.30"
-charset-normalizer = "^3.4.0"
-docker = "^7.1.0"
-exceptiongroup = "^1.2.2"
-h11 = "^0.16.0"
-httpcore = "^1.0.7"
-httpx = "^0.28.1"
-idna = "^3.10"
-pydantic = "^2.10.2"
-pydantic-settings = "^2.6.1"
-pydantic-core = "^2.27.1"
-python-dotenv = "^1.0.1"
-requests = "^2.32.4"
-sniffio = "^1.3.1"
-structlog = "^24.4.0"
-typing-extensions = "^4.12.2"
-urllib3 = "^2.5.0"
-fastapi = "^0.116.1"
-uvicorn = "^0.35.0"
-
-
-[tool.poetry.group.dev.dependencies]
-types-docker = "^7.1.0.20240827"
-pytest = "^8.3.3"
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4.2,<9.0.0",
+  "types-docker>=7.1.0.20251009,<8.0.0.0",
+]
