@@ -1,11 +1,17 @@
+from typing import Any
+from pydantic import TypeAdapter
 import structlog
 from httpx import Client, ConnectError
 
 from kitten.models.api_models import (
     BoefjeInputResponse,
+    BoefjeMeta,
     BoefjeOutput,
     LuikPopRequest,
     LuikPopResponse,
+    Task,
+    TaskPop,
+    WorkerManager,
 )
 
 logger = structlog.get_logger(__name__)
@@ -76,7 +82,7 @@ class LuikClient(LuikClientInterface):
         response = self.session.post(
             f"/boefje/output/{task_id}", json=boefje_output.model_dump()
         )
-        
+
         if response.is_error:
             logger.error(
                 "Failed to send Boefje output",
@@ -91,3 +97,26 @@ class LuikClient(LuikClientInterface):
             response=response.text,
             status=boefje_output.status,
         )
+
+    def pop_items(
+        self,
+        filters: dict[str, list[dict[str, Any]]],
+        limit: int = 1,
+    ) -> dict[str, Any]:
+        response = self.session.post(
+            "/scheduler/pop",
+            json=filters,
+            params={"limit": limit},
+        )
+        
+        logger.info("Pop items response", status=response.status_code, content=response.text)
+        
+        if response.is_error:
+            logger.error(
+                "Failed to pop items from scheduler",
+                status=response.status_code,
+                response=response.text,
+            )
+            return {}
+
+        return response.json()

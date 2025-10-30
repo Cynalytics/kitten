@@ -1,5 +1,7 @@
+import datetime
 from enum import Enum
 from typing import Any
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -72,3 +74,38 @@ class File(BaseModel):
 class BoefjeOutput(BaseModel):
     status: StatusEnum
     files: list[File] | None = None
+
+class TaskStatus(Enum):
+    """Status of a task."""
+
+    PENDING = "pending"
+    QUEUED = "queued"
+    DISPATCHED = "dispatched"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+class Task(BaseModel):
+    id: UUID
+    scheduler_id: str
+    schedule_id: str | None
+    organisation: str
+    priority: int
+    status: TaskStatus
+    type: str
+    hash: str | None = None
+    data: BoefjeMeta
+    created_at: datetime.datetime
+    modified_at: datetime.datetime
+
+class TaskIn(BaseModel):
+    status: TaskStatus
+    
+class WorkerManager:
+    class Queue(Enum):
+        BOEFJES = "boefje"
+        NORMALIZERS = "normalizer"
+
+class TaskPop(BaseModel):
+    results: list[Task]
