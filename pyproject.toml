@@ -26,4 +26,6 @@ build-backend = "poetry.core.masonry.api"
 dev = [
   "pytest>=8.4.2,<9.0.0",
   "types-docker>=7.1.0.20251009,<8.0.0.0",
+  'colorama==0.4.6 ; sys_platform == "win32" or platform_system == "Windows"',
+
 ]

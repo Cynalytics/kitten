@@ -1,4 +1,3 @@
-from typing import Any
 import structlog
 from httpx import Client, ConnectError
 
@@ -92,28 +91,3 @@ class LuikClient(LuikClientInterface):
             response=response.text,
             status=boefje_output.status,
         )
-
-    def pop_items(
-        self,
-        filters: dict[str, list[dict[str, Any]]],
-        limit: int = 1,
-    ) -> dict[str, Any]:
-        response = self.session.post(
-            "/scheduler/pop",
-            json=filters,
-            params={"limit": limit},
-        )
-
-        logger.info(
-            "Pop items response", status=response.status_code, content=response.text
-        )
-
-        if response.is_error:
-            logger.error(
-                "Failed to pop items from scheduler",
-                status=response.status_code,
-                response=response.text,
-            )
-            return {}
-
-        return response.json()
