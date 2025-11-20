@@ -1,28 +1,12 @@
-import logging
 import structlog
 
 from kitten.app import get_kitten_docker_runner
 import kitten.api
 from kitten.config import settings
+from kitten.logging import configure_logging
 
 
-structlog.configure(
-    processors=[
-        structlog.contextvars.merge_contextvars,
-        structlog.processors.add_log_level,
-        structlog.processors.StackInfoRenderer(),
-        structlog.dev.set_exc_info,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper("iso", utc=False),
-        structlog.dev.ConsoleRenderer(colors=True),
-    ],
-    context_class=dict,
-    wrapper_class=structlog.make_filtering_bound_logger(
-        logging.INFO
-    ),  # TODO: make logging use env
-    cache_logger_on_first_use=True,
-)
-
+configure_logging()
 logger = structlog.getLogger(__name__)
 
 

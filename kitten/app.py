@@ -31,7 +31,7 @@ class KittenDockerRunner(KittenRunner):
         runner_task_capabilities: list[str],
         runner_reachable_networks: list[str],
         runner_heartbeat: int,
-        kitten_api: str,
+        luik_api: str,
     ):
         self.logger = structlog.get_logger(KittenDockerRunner.__name__)
         self.luik_client = luik_client
@@ -42,7 +42,7 @@ class KittenDockerRunner(KittenRunner):
 
         self.runner_heartbeat = runner_heartbeat
 
-        self.kitten_api = kitten_api
+        self.kitten_api = luik_api
 
         self.active = True
 
@@ -98,7 +98,6 @@ class KittenDockerRunner(KittenRunner):
 
 def get_kitten_docker_runner(
     luik_api: str,
-    kitten_api: str,
     runner_task_capabilities: list[str],
     runner_reachable_networks: list[str],
     runner_heartbeat: int,
@@ -110,5 +109,5 @@ def get_kitten_docker_runner(
         runner_task_capabilities,
         runner_reachable_networks,
         runner_heartbeat,
-        kitten_api,
+        luik_api,
     )
