@@ -1,3 +1,4 @@
+import logging
 import structlog
 
 # from kitten.config import settings
@@ -15,16 +16,11 @@ def configure_logging():
             structlog.dev.set_exc_info,
             structlog.stdlib.PositionalArgumentsFormatter(),
             structlog.processors.TimeStamper("iso", utc=False),
-            (
-                structlog.dev.ConsoleRenderer(
-                    colors=True,
-                    pad_level=False,
-                    exception_formatter=structlog.dev.plain_traceback,
-                )
-            ),
+            structlog.dev.ConsoleRenderer(colors=True),
         ],
         context_class=dict,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.stdlib.BoundLogger,
+        wrapper_class=structlog.make_filtering_bound_logger(
+            logging.INFO
+        ),  # TODO: make logging use env
         cache_logger_on_first_use=True,
     )

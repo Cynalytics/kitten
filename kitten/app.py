@@ -42,7 +42,7 @@ class KittenDockerRunner(KittenRunner):
 
         self.runner_heartbeat = runner_heartbeat
 
-        self.kitten_api = luik_api
+        self.luik_api = luik_api
 
         self.active = True
 
@@ -76,7 +76,7 @@ class KittenDockerRunner(KittenRunner):
         )
         docker_response = self.docker_client.run_boefje(
             job.oci_image,
-            self.kitten_api.rstrip("/") + f"/boefje_input/{job.task_id}",
+            self.luik_api.rstrip("/") + f"/boefje/input/{job.task_id}",
         )
 
         self.logger.info("Container %s is running", docker_response.id)
